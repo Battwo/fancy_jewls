@@ -33,7 +33,7 @@ def browes():
 
     result = cursor.fetchall()
 
-
-
     connection.close()
+
+    return render_template("browse.html.jinja", products=result)
     return render_template("browse.html.jinja")
