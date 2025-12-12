@@ -1,19 +1,47 @@
-<nav class="bg-PastelTurquoise p-4 flex items-center justify-between text-seafoam text-2xl font-serif font-semibold">
-    <a href="/">YOUTH Jewels</a>
+<nav class="w-full border-b border-gray-200 bg-PastelTurquoise text-seafoam">
+  <!-- Top row: Logo + Search + Icons -->
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    
+    <!-- Left: Logo -->
+    <a href="/" class="text-3xl font-semibold tracking-wide">
+      YOUTH Jewels
+    </a>
 
-    <div class="flex items-center gap-6">
-        <a href="/NEWARRIVAL "> New Arrivals</a>
-        <a href="/Neckless">Neckless</a>
-        <a href="/Earings"> Earings </a>
-        <a href="/HairAccessories"> Hair Accessories</a>
-        <a href="/RINGS "> Rings</a>
-        <a href="/account"> log in</a>
-        <a href="/ShopChart"> shop chart</a>
-
-
+    <!-- Middle: Search bar -->
+    <div class="flex items-center w-1/2">
+      <input 
+        type="text"
+        placeholder="Search jewelry..."
+        class="w-full border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none"
+      >
+      <button class="bg-seafoam text-white px-4 py-2 rounded-r-md">
+        Search
+      </button>
     </div>
-</nav>
 
+    <!-- Right: Icons -->
+    <div class="flex items-center gap-6 text-xl">
+      <a href="/account" class="hover:underline">Account</a>
+      <a href="/cart" class="hover:underline">Cart</a>
+      <a href="/cart" class="hover:underline">Log in</a>
+    </div>
+
+  </div>
+
+  <!-- Bottom row: Category links -->
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-10 text-lg font-medium">
+    <a href="/Browse" class="hover:text-Darkred">New Arrivals</a>
+    <a href="/necklaces" class="hover:text-Darkred">Necklaces</a>
+    <a href="/earrings" class="hover:text-Darkred">Earrings</a>
+    <a href="/hair" class="hover:text-Darkred">Hair Accessories</a>
+    <a href="/rings" class="hover:text-Darkred">Rings</a>
+  </div>
+</nav>
+  <br>
+  <br>
+  
+  
+<!-- Theme: this is for the color of my navbar -->
 <style type="text/tailwindcss">
       @theme {
         --color-PastelTurquoise: #67ac9f;
