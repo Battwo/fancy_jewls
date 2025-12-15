@@ -56,15 +56,15 @@ def product_page(product_id):
 
 
 
-@app.route('/signup', methods=["POST", "GET"])
-def signup():
+@app.route('/register', methods=["POST", "GET"])
+def register():
     if request.method == "POST":
         name=request.form["name"]
         email=request.form["email"]
         password=request.form["password"]
-        password_confrim=request.form["repeat_password"]
+        password_confrim=request.form["confirm_password"]
         address=request.form["address"]
-        birthdate=request.form["birthdate"]
+        birthdate=request.form["birthday"]
         
         if password != password_confrim:
             flash("Passwords do not match")
@@ -78,7 +78,7 @@ def signup():
                 INSERT INTO `User`(`Name`, `Password`, `Email`, `Adress`, `Birthday`, )
                 VALUES(%s,%s,%s,%s,%s)
                            
-            """,(name,password,email,adress,birthday))
+            """,(name,password,email,address,birthday))
             
             return redirect('/login')
         
