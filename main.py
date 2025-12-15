@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash, redirect
 
 import pymysql
 
@@ -7,6 +7,8 @@ from dynaconf import Dynaconf
 app = Flask(__name__)
 
 config = Dynaconf( settings_file = [ "settings.toml"])
+
+app.secret_key = config
 
 def connect_db():
     conn = pymysql.connect(
@@ -51,3 +53,33 @@ def product_page(product_id):
     connection.close()
 
     return render_template("product.html.jinja", product=result)
+
+
+
+@app.route('/signup', methods=["POST", "GET"])
+def signup():
+    if request.method == "POST":
+        name=request.form["name"]
+        email=request.form["email"]
+        password=request.form["password"]
+        password_confrim=request.form["repeat_password"]
+        address=request.form["address"]
+        birthdate=request.form["birthdate"]
+        
+        if password != password_confrim:
+            flash("Passwords do not match")
+        elif len(password) < 8:
+         flash("Password must be at least 8 characters long")     
+        else:
+            connection = connect_db()
+            cursor = connection = connection.cursor()
+
+            cursor.execute(""" 
+                INSERT INTO `User`(`Name`, `Password`, `Email`, `Adress`, `Birthday`, )
+                VALUES(%s,%s,%s,%s,%s)
+                           
+            """,(name,password,email,adress,birthday))
+            
+            return redirect('/login')
+        
+    return render_template("register.html.jinja")

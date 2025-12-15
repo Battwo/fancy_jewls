@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+  {% include "components/navbar.html.jinja" %}
+
+  {% include "components/navbar.html.jinja"%}
+      {% for message in get_flashed_messages() %}
+      <li>{{message}}</li>
+
+  {%endfor%}
+   
+
+
+    <form method="post" class="flex flex-col gap-2">
+        <label>Name</label>
+        <input name="name" required>
+
+        <label>Password</label>
+        <input name="password" required type="password">
+
+        <label>confirm password</label>
+        <input name="confirm_password" required type="Password">
+
+        <label> Email</label>
+        <input name="email" required type="email">
+
+        <label>Adress</label>
+        <input name="adress" required>
+
+        <button type="submit"> submit</button>
+    </form>
+
+
+
+  </body>
+</html>
+
