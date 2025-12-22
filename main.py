@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, abort
 
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 import pymysql
 
@@ -104,6 +104,17 @@ def product_page(product_id):
 
     return render_template("product.html.jinja", product=result)
 
+@app.route("/product/<product_id>/add_to_cart", methods=["POST"])
+@login_required
+def add_to_cart(product_id):
+
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute(""" 
+        INSERT INTO `Cart` (`Quantity`,`ProductID`,`UserID`)""")
+    connection.close()
+    return redirect('/cart')
 
 
 @app.route('/register', methods=["POST", "GET"])
@@ -125,7 +136,7 @@ def register():
             cursor = connection = connection.cursor()
 
             cursor.execute(""" 
-                INSERT INTO `User`(`Name`, `Password`, `Email`, `Adress`, `Birthday`, )
+                INSERT INTO `User`(`Name`, `Password`, `Email`, `Address`, `Birthday` )
                 VALUES(%s,%s,%s,%s,%s)
                            
             """,(name,password,email,address,birthday))
@@ -150,9 +161,9 @@ def login():
 
         cursor = connection.cursor()
 
-        connection.close()
-
         cursor.execute("SELECT * FROM User WHERE Email = %s", (email,))
+
+        print(cursor)
 
         result = cursor.fetchone()
 
@@ -168,3 +179,24 @@ def login():
        
         
     return render_template("login.html.jinja")
+
+
+
+@app.route('/cart')
+@login_required
+def cart():
+    connection = connect_db()
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT * FROM `Cart`
+        JOIN `Product` ON `Product`.`ID` = `Cart`.`ProductID`
+        WHERE `UserID` = %s
+    """, (current_user.id) )
+
+    results = cursor.fetchall()
+
+    connection.close()
+
+    return render_template("cart/html.jinja", cart=results)

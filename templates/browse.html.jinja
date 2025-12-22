@@ -13,7 +13,7 @@
 
     <main class="grid grid-cols-4 gap-3 max-w-4xl mx-auto p-6 mb-5">
       {% for x in products %}
-        <div class="grid">
+        <a href="/product/{{x['ID']}}" class="grid">
           <img class="h-25 mx-auto rounded-lg" src=" {{x['Image']}}">
           <br>
           <div class="text-center text-Darkred"> {{x["ProductName"]}}</div> <br>
@@ -26,3 +26,5 @@
 </html>
 
 
+grid grid-cols-4 gap-3 max-w-4xl mx-auto p-6 mb-5
+h-25 mx-auto rounded-lg
