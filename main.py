@@ -107,14 +107,25 @@ def product_page(product_id):
 @app.route("/product/<product_id>/add_to_cart", methods=["POST"])
 @login_required
 def add_to_cart(product_id):
-
     connection = connect_db()
     cursor = connection.cursor()
 
-    cursor.execute(""" 
-        INSERT INTO `Cart` (`Quantity`,`ProductID`,`UserID`)""")
+    quantity = request.form.get("quantity", 1) 
+    user_id = current_user.id  
+
+    cursor.execute(
+        """
+        INSERT INTO Cart (Quantity, ProductID, UserID)
+        VALUES (%s, %s, %s)
+        """,
+        (quantity, product_id, user_id)
+    )
+
+    connection.commit() 
     connection.close()
-    return redirect('/cart')
+
+    return redirect("/cart")
+
 
 
 @app.route('/register', methods=["POST", "GET"])
@@ -200,3 +211,22 @@ def cart():
     connection.close()
 
     return render_template("cart.html.jinja", cart=results)
+
+
+@app.route("/cart/<cart_id>/update_qty", methods=["POST"])
+@login_required
+def update_cart(product_id):
+    new_qty = request.form["qty"]
+
+    connection= connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE `Cart`
+        SET `Quantity` = %s
+        WHERE `ProductID` = %s AND `UserID` = %s
+    """, (new_qty, product_id, current_user.id) )
+
+    connection.close()
+
+    return redirect('/cart')

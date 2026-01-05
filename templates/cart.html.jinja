@@ -10,21 +10,22 @@
    
 
  
-<main class="max-w-4xl mx-auto p-6 mb-5">
-<h1 class="max-xl font-bold">your cart</h1>
-
-{% for x in cart%}
-    <div class="cart-row">
-        <img src="{{x['Image']}}">
-        <div>{{x['Name']}}</div>
-        <div>{{x['Quantity']}}</div>
-        <div>${{x['Price']}}</div>
-        <div>${{ x['Price']* x ['Quantity'] }}</div>
-    </div>
-{% endfor %}
-
-
-        </main>
-
-    </body>
+    <main class="max-w-4xl mx-auto p-6 mb-5">
+        <h1 class="max-xl font-bold">your cart</h1>
+        {% for x in cart%}
+            <div class="cart-row">
+                <img src="{{x['Image']}}">
+                <div>{{x['Name']}}</div>
+                <div> 
+                    <form method="post" action="/cart/{{x['ProductID']}}/update_qty">
+                    <input name="qty" type="number" value="{{x['Quantity']}}">
+                    <button type="submit">Update</button>
+                    </form>
+                </div>
+                <div>${{x['Price']}}</div>
+                <div>${{ x['Price']* x ['Quantity'] }}</div>
+            </div>
+        {% endfor %}
+    </main>
+</body>
 </html>
