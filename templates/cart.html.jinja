@@ -1,31 +1,68 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  </head>
-  <body>
-  {% include "components/navbar.html.jinja" %}
-   
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Cart</title>
+</head>
 
- 
-    <main class="max-w-4xl mx-auto p-6 mb-5">
-        <h1 class="max-xl font-bold">your cart</h1>
-        {% for x in cart%}
-            <div class="cart-row">
-                <img src="{{x['Image']}}">
-                <div>{{x['Name']}}</div>
-                <div> 
-                    <form method="post" action="/cart/{{x['ProductID']}}/update_qty">
-                    <input name="qty" type="number" value="{{x['Quantity']}}">
-                    <button type="submit">Update</button>
-                    </form>
-                </div>
-                <div>${{x['Price']}}</div>
-                <div>${{ x['Price']* x ['Quantity'] }}</div>
-            </div>
-        {% endfor %}
-    </main>
+<body class="bg-gray-100 min-h-screen">
+
+{% include "components/navbar.html.jinja" %}
+
+<main class="max-w-5xl mx-auto p-6 pt-24">
+
+  <h1 class="text-3xl font-bold mb-6">
+    Your Shopping Cart
+  </h1>
+
+  {% for x in cart %}
+  <div class="grid grid-cols-5 items-center bg-white rounded-lg shadow p-4 mb-4 gap-4">
+
+    <!-- Product Image -->
+    <img src="{{ x['Image'] }}"
+         class="h-24 w-24 object-contain rounded border">
+
+    <!-- Product Name -->
+    <div class="col-span-2 font-semibold">
+      {{ x['Name'] }}
+    </div>
+
+    <!-- Quantity + Update -->
+    <div class="text-center">
+      <form method="post" action="/cart/{{ x['ProductID'] }}/update_qty" class="flex flex-col gap-1 items-center">
+        <input
+          name="qty"
+          type="number"
+          value="{{ x['Quantity'] }}"
+          min="1"
+          class="w-16 border rounded px-2 py-1 text-center"
+        >
+        <button type="submit" class="text-sm text-blue-600 hover:underline">
+          Update
+        </button>
+      </form>
+
+      <form method="post" action="/cart/{{ x['ProductID'] }}/remove">
+        <button type="submit" class="text-sm text-red-500 hover:underline mt-1">
+          Remove
+        </button>
+      </form>
+    </div>
+
+    <!-- Price + Subtotal -->
+    <div class="text-right">
+      <div class="font-semibold">${{ x['Price'] }}</div>
+      <div class="text-sm text-gray-600">
+        Subtotal: ${{ x['Price'] * x['Quantity'] }}
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+
+</main>
+
 </body>
 </html>

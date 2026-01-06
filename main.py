@@ -117,6 +117,8 @@ def add_to_cart(product_id):
         """
         INSERT INTO Cart (Quantity, ProductID, UserID)
         VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+        Quantity = Quantity + %s 
         """,
         (quantity, product_id, user_id)
     )
@@ -213,7 +215,7 @@ def cart():
     return render_template("cart.html.jinja", cart=results)
 
 
-@app.route("/cart/<cart_id>/update_qty", methods=["POST"])
+@app.route("/cart/<product_id>/update_qty", methods=["POST"])
 @login_required
 def update_cart(product_id):
     new_qty = request.form["qty"]
@@ -226,6 +228,22 @@ def update_cart(product_id):
         SET `Quantity` = %s
         WHERE `ProductID` = %s AND `UserID` = %s
     """, (new_qty, product_id, current_user.id) )
+
+    connection.close()
+
+    return redirect('/cart')
+
+@app.route("/cart/<product_id>/remove", methods=["POST"])
+@login_required
+def remove(product_id):
+    
+    connection= connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+
+        DELETE FROM `Cart`
+        WHERE `ProductID` = %s AND `UserID` = %s""", (product_id, current_user.id )) 
 
     connection.close()
 
