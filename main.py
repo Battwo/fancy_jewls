@@ -120,7 +120,7 @@ def add_to_cart(product_id):
         ON DUPLICATE KEY UPDATE
         Quantity = Quantity + %s 
         """,
-        (quantity, product_id, user_id)
+        (quantity, product_id, user_id, quantity)
     )
 
     connection.commit() 
@@ -248,3 +248,78 @@ def remove(product_id):
     connection.close()
 
     return redirect('/cart')
+
+
+@app.route('/checkout')
+@login_required
+def checkout():
+    connection = connect_db()
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT * FROM `Cart`
+        JOIN `Product` ON `Product`.`ID` = `Cart`.`ProductID`
+        WHERE `UserID` = %s
+    """, (current_user.id) )
+
+    results = cursor.fetchall()
+
+    if request.method == "POST":
+        #create the order in the database
+        cursor.execute("INSERT INTO `CartTwo` (`UserID`,) VALUES (%s, %s)", (current_user.id, ) )
+        
+        #store products bought
+        
+        sale = cursor.lastrowid 
+        for item in results:
+            cursor.execute("""
+                INSERT INTO `SaleProduct`
+                            (`CartID`, `ProductID,` Quantity`)
+                VALUES 
+                           (%s, %s, %s)
+            """, (sale, items ['ProductID'], item['Quantity']) )
+        #empty cart
+        cursor.execute("DELETE FROM `Cart` WHERE `UserID` = %s", (current_user.id,) )
+        #goodbye message
+        #TODO: Make thank you page + route
+        return redirect ("/thank_you")
+
+
+    connection.close()
+
+    return render_template("checkout.html.jinja", cart=results)
+
+@app.route("/checkout/<product_id>/update_qty", methods=["POST"])
+@login_required
+def checkout_update(product_id):
+    new_qty = request.form["qty"]
+
+    connection= connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE `Cart`
+        SET `Quantity` = %s
+        WHERE `ProductID` = %s AND `UserID` = %s
+    """, (new_qty, product_id, current_user.id) )
+
+    connection.close()
+
+    return redirect('/checkout')
+
+@app.route("/checkout/<product_id>/remove", methods=["POST"])
+@login_required
+def remove_from_checkout(product_id):
+    
+    connection= connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+
+        DELETE FROM `Cart`
+        WHERE `ProductID` = %s AND `UserID` = %s""", (product_id, current_user.id )) 
+
+    connection.close()
+
+    return redirect('/checkout')

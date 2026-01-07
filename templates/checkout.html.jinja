@@ -12,19 +12,18 @@
 {% include "components/navbar.html.jinja" %}
 
 <main class="max-w-5xl mx-auto p-6 pt-24">
-
+<div>
   <h1 class="text-3xl font-bold mb-6">
-    Your Shopping Cart
+    checkout page
   </h1>
 
   {% for x in cart %}
   <div class="grid grid-cols-5 items-center bg-white rounded-lg shadow p-4 mb-4 gap-4">
 
-    
+ 
     <img src="{{ x['Image'] }}"
          class="h-24 w-24 object-contain rounded border">
 
-   
     <div class="col-span-2 font-semibold">
       {{ x['Name'] }}
     </div>
@@ -60,14 +59,25 @@
     </div>
   {% endfor %}
     </div>
-    <div class="text-right mt-6">
-      <div class="text-xl font-bold">
-        Total: ${{ total_price }}
-      </div>
- <button class="bg-yellow-500 hover:bg-white-600 text-white px-4 py-2 rounded text-sm" type="submit">
-<a href="{{ url_for('checkout') }}" class="checkout-button">Proceed to Checkout</a>
-</button> 
-    </div>
+</div> 
+
+ <form method="POST"
+                class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md space-y-5 flex-auto ">
+
+            <h1 class="text-2xl font-bold text-center text-gray-800">            additonal info
+</h1>
+
+            <input type="email" name="email" placeholder="Email" required
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <input type="password" name="password" placeholder="Password" required
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition">
+            additonal info
+            </button>
+        </div>
 </main>
 
 </body>
