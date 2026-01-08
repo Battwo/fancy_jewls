@@ -110,7 +110,7 @@ def add_to_cart(product_id):
     connection = connect_db()
     cursor = connection.cursor()
 
-    quantity = request.form.get("quantity", 1) 
+    quantity = request.form['quantity']
     user_id = current_user.id  
 
     cursor.execute(
@@ -210,9 +210,14 @@ def cart():
 
     results = cursor.fetchall()
 
+    total = 0 
+
+    for item in results:
+        total += item['Price'] * item['Quantity']
+
     connection.close()
 
-    return render_template("cart.html.jinja", cart=results)
+    return render_template("cart.html.jinja", cart=results, total=total)
 
 
 @app.route("/cart/<product_id>/update_qty", methods=["POST"])
