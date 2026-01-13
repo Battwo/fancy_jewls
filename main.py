@@ -272,7 +272,7 @@ def checkout():
 
     if request.method == "POST":
         #create the order in the database
-        cursor.execute("INSERT INTO `CartTwo` (`UserID`,) VALUES (%s, %s)", (current_user.id, ) )
+        cursor.execute("INSERT INTO `SaleCart` (`UserID`,) VALUES (%s, %s)", (current_user.id, ) )
         
         #store products bought
         
@@ -328,3 +328,35 @@ def remove_from_checkout(product_id):
     connection.close()
 
     return redirect('/checkout')
+
+@app.route("/past_order")
+@login_required
+def past_order():
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT
+            SaleCart.ID,
+            SaleCart.`Timestamp` AS `Timestamp`,
+            SUM(SaleProduct.Quantity) AS Quantity,
+            SUM(SaleProduct.Quantity * Product.Price) AS Total
+        FROM SaleCart
+        JOIN SaleProduct
+            ON SaleProduct.CartID = SaleCart.ID
+        JOIN Product
+            ON Product.ID = SaleProduct.ProductID
+        WHERE SaleCart.UserID = %s
+        GROUP BY SaleCart.ID, SaleCart.`Timestamp`;
+    """, (current_user.id,))
+
+    orders = cursor.fetchall()
+    connection.close()
+
+    return render_template("past_order.html.jinja", orders=orders)
+
+
+@app.route("/thank")
+@login_required
+def thank_you():
+    return render_template("thank.html.jinja")

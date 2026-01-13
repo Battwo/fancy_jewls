@@ -5,24 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
-  <body>
-  {% include "components/navbar.html.jinja" %}
 
-  
-    
+  <body class="bg-white text-gray-900">
+    {% include "components/navbar.html.jinja" %}
 
-    <main class="grid grid-cols-4 gap-3 max-w-4xl mx-auto p-6 mb-5">
+    <div class="max-w-7xl mx-auto px-6 pt-6">
+      <h1 class="text-xl font-semibold tracking-wide">Trending Jewelry</h1>
+    </div>
+
+ 
+    <main class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-7xl mx-auto p-6 mb-10">
       {% for x in products %}
-        <a href="/product/{{x['ID']}}" class="grid">
-          <img class="h-25 mx-auto rounded-lg" src=" {{x['Image']}}">
-          <br>
-          <div class="text-center text-Darkred"> {{x["ProductName"]}}</div> <br>
-        <div class="text-center font-bold text-sm text-Darkred"> ${{x["Price"]}}</div>
-      </div>    
-    {% endfor%}
+        <a href="/product/{{ x['ID'] }}"
+           class="group bg-white rounded-lg overflow-hidden hover:shadow-lg transition duration-300">
+
+          
+          <div class="overflow-hidden">
+            <img
+              src="{{ x['Image'] }}"
+              alt="{{ x['ProductName'] }}"
+              class="w-full h-56 object-cover transform group-hover:scale-105 transition duration-300"
+            >
+          </div>
+
+        
+          <div class="p-3 text-center">
+            <p class="text-sm text-gray-600 truncate">
+              {{ x["ProductName"] }}
+            </p>
+
+            <p class="mt-1 text-base font-semibold text-black">
+              ${{ x["Price"] }}
+            </p>
+          </div>
+
+        </a>
+      {% endfor %}
     </main>
 
   </body>
 </html>
-
 
