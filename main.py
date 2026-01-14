@@ -81,13 +81,14 @@ def browes():
     connection.close()
 
     return render_template("browse.html.jinja", products=result)
-    return render_template("browse.html.jinja")
+    
 
 
 
 
 
-@app.route("/product/<product_id>")
+@app.route("/product/<product_id>", methods=["GET"])
+@login_required
 def product_page(product_id):
     connection = connect_db()
 
@@ -97,12 +98,18 @@ def product_page(product_id):
 
     result = cursor.fetchone()
 
-    connection .close() 
+    
 
     if result is None:
         abort(404)
 
-    return render_template("product.html.jinja", product=result)
+    cursor.execute("SELECT * FROM `Product` WHERE `ID` = %s", (product_id,))
+    reviews = cursor.fetchall()
+
+    connection.close()
+    
+
+    return render_template("product.html.jinja", product=result, reviews=reviews)
 
 @app.route("/product/<product_id>/add_to_cart", methods=["POST"])
 @login_required
@@ -360,3 +367,6 @@ def past_order():
 @login_required
 def thank_you():
     return render_template("thank.html.jinja")
+
+
+
