@@ -68,7 +68,7 @@ def index():
 
 
 
-@app.route("/Browse")
+@app.route("/browse")
 def browes():
     connection = connect_db()
 
@@ -262,7 +262,7 @@ def remove(product_id):
     return redirect('/cart')
 
 
-@app.route('/checkout')
+@app.route('/checkout', methods=["GET", "POST"])
 @login_required
 def checkout():
     connection = connect_db()
@@ -279,23 +279,21 @@ def checkout():
 
     if request.method == "POST":
         #create the order in the database
-        cursor.execute("INSERT INTO `SaleCart` (`UserID`,) VALUES (%s, %s)", (current_user.id, ) )
+        cursor.execute("INSERT INTO `SaleCart` (`UserID`) VALUES (%s)", (current_user.id ) )
         
         #store products bought
         
         sale = cursor.lastrowid 
         for item in results:
-            cursor.execute("""
-                INSERT INTO `SaleProduct`
-                            (`CartID`, `ProductID,` Quantity`)
-                VALUES 
-                           (%s, %s, %s)
-            """, (sale, items ['ProductID'], item['Quantity']) )
+            cursor.execute(
+                "INSERT INTO `SaleProduct` (`Quantity`, `ProductID`, `SaleCartID`) VALUES (%s, %s, %s)",
+                (item['Quantity'], item['ProductID'], sale)
+)
         #empty cart
         cursor.execute("DELETE FROM `Cart` WHERE `UserID` = %s", (current_user.id,) )
         #goodbye message
         #TODO: Make thank you page + route
-        return redirect ("/thank_you")
+        return redirect ("/thank")
 
 
     connection.close()
@@ -350,7 +348,7 @@ def past_order():
             SUM(SaleProduct.Quantity * Product.Price) AS Total
         FROM SaleCart
         JOIN SaleProduct
-            ON SaleProduct.CartID = SaleCart.ID
+            ON SaleProduct.SaleCartID = SaleCart.ID
         JOIN Product
             ON Product.ID = SaleProduct.ProductID
         WHERE SaleCart.UserID = %s
@@ -360,7 +358,7 @@ def past_order():
     orders = cursor.fetchall()
     connection.close()
 
-    return render_template("past_order.html.jinja", orders=orders)
+    return render_template("past_order.html.jinja", past_order=orders)
 
 
 @app.route("/thank")
@@ -369,4 +367,28 @@ def thank_you():
     return render_template("thank.html.jinja")
 
 
+
+@app.route("/product/<product_id>/review", methods=["POST"])
+@login_required
+def add_reviw (product_id):
+    #get info from form
+    rating = request.form['rating']
+    comment = request.form['comment']
+
+
+    #connect to db 
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    #insert review into db
+    cursor.execute("""
+        INSERT INTO `Reviews` (`Ratings`, `Comments`, `ProductID`, `UserID`)
+        VALUES (%s, %s, %s, %s)
+    """, (rating, comment, product_id, current_user.id) )
+    connection.close()
+
+
+    #redirect back to product page
+
+    return redirect(f"/product/{product_id}")
 

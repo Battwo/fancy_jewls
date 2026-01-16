@@ -17,7 +17,7 @@
         <h1 class="text-3xl font-bold mb-6">
             Your Shopping Cart
         </h1>
-
+        {%if cart%}
         {% for x in cart %}
         <div class="grid grid-cols-5 items-center bg-white rounded-lg shadow p-4 mb-4 gap-4">
 
@@ -65,6 +65,10 @@
         <button class="bg-yellow-500 hover:bg-white-600 text-white px-4 py-2 rounded text-sm" type="submit">
             <a href="{{ url_for('checkout') }}" class="checkout-button">Proceed to Checkout</a>
         </button>
+        {% else %}
+        <p class="text-gray-600">Your cart is empty.</p>
+        <a href="/browse" class="text-blue-600 hover:underline">Continue Shopping</a>
+        {% endif %}
     </main>
 
 </body>

@@ -54,13 +54,16 @@
             class="bg-gray-50 border rounded-xl p-6 mb-8">
 
         <label class="block font-medium mb-2">Write a review</label>
+        <label>ratings</label>
+        <input type="number" min="1" max="5" name="rating" required
+               class="w-16 border rounded-md px-3 py-2  mb-4">
 
         <textarea
-          name="review"
+          name="comment"
           rows="4"
           required
           placeholder="Share your thoughts about this product..."
-          class="w-full border rounded-md p-3 focus:ring-2 focus:ring-black resize-none"
+          class="w-full border rounded-md p-3  resize-none"
         ></textarea>
 
         <button
